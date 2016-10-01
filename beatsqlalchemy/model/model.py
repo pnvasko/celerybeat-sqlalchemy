@@ -20,6 +20,10 @@ from sqlalchemy import Column, String, DateTime, ForeignKey, Integer, Boolean
 from sqlalchemy_utils.types.choice import ChoiceType
 
 
+def gettext(message):
+    return message
+_ = gettext
+
 class ValidationError(Exception):
     pass
 
@@ -58,6 +62,8 @@ class IntervalSchedule(Base):
     def period_singular(self):
         return self.period[:-1]
 
+    def save(self):
+        pass
 
 class CrontabSchedule(Base):
     """
@@ -99,6 +105,8 @@ class CrontabSchedule(Base):
         else:
             return obj
 
+    def save(self):
+        pass
 
 class PeriodicTasks(Base):
     __tablename__ = "periodic_tasks"
@@ -117,6 +125,8 @@ class PeriodicTasks(Base):
         obj = cls.filter_by(session, ident=1).first()
         return obj.last_update if obj else None
 
+    def save(self):
+        pass
 
 class PeriodicTask(Base):
     __tablename__ = "periodic_task"
@@ -144,3 +154,6 @@ class PeriodicTask(Base):
             return self.crontab.schedule
         if self.interval:
             return self.interval.schedule
+
+    def save(self):
+        pass

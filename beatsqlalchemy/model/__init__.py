@@ -13,7 +13,7 @@
 #=============================================================================
 '''
 from contextlib import contextmanager
-
+from .base import Base
 from .model import CrontabSchedule, PeriodicTask, PeriodicTasks, IntervalSchedule
 from celery import current_app
 from sqlalchemy import event
@@ -23,9 +23,8 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.schema import MetaData
 
 __all__ = [
-    'CrontabSchedule', 'PeriodicTask', 'PeriodicTasks', 'IntervalSchedule'
+    'Base', 'CrontabSchedule', 'PeriodicTask', 'PeriodicTasks', 'IntervalSchedule'
 ]
-
 
 engine = create_engine(current_app.conf.ENGINE_URL, pool_size=20, pool_recycle=3600)
 Session = sessionmaker(bind=engine, autocommit=True)
