@@ -89,11 +89,6 @@ class ModelEntry(ScheduleEntry):
 
     @classmethod
     def to_model_schedule(cls, schedule, session):
-        """
-        :param session:
-        :param schedule:
-        :return:
-        """
         for schedule_type, model_type, model_field in cls.model_schedules:
             debug(cls.model_schedules)
             schedule = schedules.maybe_schedule(schedule)
@@ -105,14 +100,6 @@ class ModelEntry(ScheduleEntry):
 
     @classmethod
     def from_entry(cls, name, session, skip_fields=('relative', 'options'), **entry):
-        """
-        创建或者更新PeriodicTask
-        :param session:
-        :param name:
-        :param skip_fields:
-        :param entry:
-        :return:
-        """
         fields = dict(entry)
         for skip_field in skip_fields:
             fields.pop(skip_field, None)
@@ -132,7 +119,7 @@ class ModelEntry(ScheduleEntry):
 
 
 class DatabaseScheduler(Scheduler):
-    sync_every = 1 * 60
+    sync_every = 5
 
     Entry = ModelEntry
     Model = PeriodicTask
@@ -175,8 +162,6 @@ class DatabaseScheduler(Scheduler):
 
     def reserve(self, entry):
         new_entry = Scheduler.reserve(self, entry)
-        # Need to store entry by name, because the entry may change
-        # in the mean time.
         self._dirty.add(new_entry.name)
         return new_entry
 
@@ -189,13 +174,12 @@ class DatabaseScheduler(Scheduler):
                 _tried.add(name)
                 self.schedule[name].save()
             except KeyError:
-                pass
+                error("sync key error ")
 
     def update_from_dict(self, dict_):
         s = {}
         for name, entry in dict_.items():
             try:
-
                 s[name] = self.Entry.from_entry(name, self.session, **entry)
             except Exception as exc:
                 error(ADD_ENTRY_ERROR, name, exc, entry)
@@ -221,7 +205,7 @@ class DatabaseScheduler(Scheduler):
             update = True
             self._initial_read = True
         elif self.schedule_changed():
-            info('DatabaseScheduler: Schedule changed.')
+            debug('DatabaseScheduler: Schedule changed.')
             update = True
 
         if update:
