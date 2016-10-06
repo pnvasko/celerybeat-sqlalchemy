@@ -111,7 +111,7 @@ class CrontabSchedule(Base):
 class PeriodicTasks(Base):
     __tablename__ = "periodic_tasks"
 
-    ident = Column(Integer, default=1, primary_key=True)
+    ident = Column(Integer, default=1, autoincrement=True)
     last_update = Column(DateTime, default=datetime.datetime.utcnow)
 
     @classmethod

@@ -21,7 +21,7 @@ class TimestampModel(object):
     """
     自带两个时间戳字段的base model
     """
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     create_time = Column(DateTime, default=datetime.utcnow)
     update_time = Column(DateTime, onupdate=datetime.utcnow)
     utc_fresh_time = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, doc="刷新时间utc")
